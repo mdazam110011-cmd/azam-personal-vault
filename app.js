@@ -1,117 +1,162 @@
 
-const cfg = window.AZAM_CONFIG;
-
-const client = window.supabase.createClient(
-  cfg.SUPABASE_URL,
-  cfg.SUPABASE_ANON_KEY
-);
-
-const loginBox = document.getElementById("loginBox");
-const vaultBox = document.getElementById("vaultBox");
 const message = document.getElementById("message");
 
-async function refresh() {
-  const { data, error } = await client.auth.getSession();
-
-  if (error) {
-    message.textContent = error.message;
-    return;
-  }
-
-  const session = data.session;
-  loginBox.hidden = !!session;
-  vaultBox.hidden = !session;
-
-  if (session) await loadEntries();
+function showError(text) {
+  message.textContent = text;
 }
 
-document.getElementById("loginBtn").onclick = async () => {
-  message.textContent = "লগইন হচ্ছে...";
+async function startApp() {
+  try {
+    const cfg = window.AZAM_CONFIG;
 
-  const { error } = await client.auth.signInWithPassword({
-    email: document.getElementById("email").value.trim(),
-    password: document.getElementById("password").value
-  });
+    if (!cfg || !cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
+      throw new Error("Supabase-এর সংযোগের তথ্য পাওয়া যায়নি।");
+    }
 
-  if (error) {
-    message.textContent = error.message;
-  } else {
-    message.textContent = "লগইন সফল হয়েছে!";
+    if (!window.supabase) {
+      throw new Error("Supabase লাইব্রেরি লোড হয়নি।");
+    }
+
+    const client = window.supabase.createClient(
+      cfg.SUPABASE_URL,
+      cfg.SUPABASE_ANON_KEY
+    );
+
+    const loginBox = document.getElementById("loginBox");
+    const vaultBox = document.getElementById("vaultBox");
+
+    async function loadEntries() {
+      const box = document.getElementById("entries");
+      box.innerHTML = "তথ্য লোড হচ্ছে...";
+
+      const { data, error } = await client
+        .from("vault_entries")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        box.textContent = "তথ্য লোড হয়নি: " + error.message;
+        return;
+      }
+
+      box.innerHTML = "";
+
+      data.forEach(item => {
+        const article = document.createElement("article");
+        article.className = "entry";
+
+        const heading = document.createElement("h3");
+        heading.textContent = item.title;
+
+        const content = document.createElement("div");
+        content.textContent = item.content;
+
+        article.append(heading, content);
+        box.append(article);
+      });
+    }
+
+    async function refresh() {
+      const { data, error } = await client.auth.getSession();
+
+      if (error) throw error;
+
+      const session = data.session;
+      loginBox.hidden = !!session;
+      vaultBox.hidden = !session;
+
+      if (session) await loadEntries();
+    }
+
+    document.getElementById("loginBtn").onclick = async () => {
+      try {
+        showError("লগইন হচ্ছে...");
+
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+
+        if (!email || !password) {
+          showError("Gmail ও পাসওয়ার্ড লিখুন।");
+          return;
+        }
+
+        const { error } = await client.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) {
+          showError("লগইন হয়নি: " + error.message);
+          return;
+        }
+
+        showError("");
+        await refresh();
+
+      } catch (error) {
+        showError("সমস্যা: " + error.message);
+      }
+    };
+
+    document.getElementById("logoutBtn").onclick = async () => {
+      const { error } = await client.auth.signOut();
+
+      if (error) {
+        showError(error.message);
+        return;
+      }
+
+      await refresh();
+    };
+
+    document.getElementById("saveBtn").onclick = async () => {
+      try {
+        const title = document.getElementById("title").value.trim();
+        const content = document.getElementById("content").value.trim();
+
+        if (!title || !content) {
+          showError("শিরোনাম ও তথ্য লিখুন।");
+          return;
+        }
+
+        const { data: { user }, error: userError } =
+          await client.auth.getUser();
+
+        if (userError || !user) {
+          showError("আবার লগইন করুন।");
+          return;
+        }
+
+        const { error } = await client
+          .from("vault_entries")
+          .insert({
+            user_id: user.id,
+            title,
+            content
+          });
+
+        if (error) {
+          showError("সংরক্ষণ হয়নি: " + error.message);
+          return;
+        }
+
+        showError("তথ্য সফলভাবে সংরক্ষিত হয়েছে!");
+
+        document.getElementById("title").value = "";
+        document.getElementById("content").value = "";
+
+        await loadEntries();
+
+      } catch (error) {
+        showError("সমস্যা: " + error.message);
+      }
+    };
+
     await refresh();
+
+  } catch (error) {
+    showError("ওয়েবসাইটের সমস্যা: " + error.message);
   }
-};
-
-document.getElementById("logoutBtn").onclick = async () => {
-  await client.auth.signOut();
-  await refresh();
-};
-
-document.getElementById("saveBtn").onclick = async () => {
-  const title = document.getElementById("title").value.trim();
-  const content = document.getElementById("content").value.trim();
-
-  if (!title || !content) {
-    message.textContent = "শিরোনাম ও তথ্য লিখুন।";
-    return;
-  }
-
-  const { data } = await client.auth.getUser();
-
-  if (!data.user) {
-    message.textContent = "আবার লগইন করুন।";
-    return;
-  }
-
-  const { error } = await client.from("vault_entries").insert({
-    user_id: data.user.id,
-    title,
-    content
-  });
-
-  message.textContent = error
-    ? error.message
-    : "তথ্য সংরক্ষণ হয়েছে।";
-
-  if (!error) {
-    document.getElementById("title").value = "";
-    document.getElementById("content").value = "";
-    await loadEntries();
-  }
-};
-
-async function loadEntries() {
-  const box = document.getElementById("entries");
-  box.innerHTML = "";
-
-  const { data, error } = await client
-    .from("vault_entries")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    box.textContent = error.message;
-    return;
-  }
-
-  data.forEach(item => {
-    const article = document.createElement("article");
-    article.className = "entry";
-
-    const heading = document.createElement("h3");
-    heading.textContent = item.title;
-
-    const content = document.createElement("div");
-    content.textContent = item.content;
-
-    article.append(heading, content);
-    box.append(article);
-  });
 }
 
-client.auth.onAuthStateChange(() => {
-  refresh();
-});
-
-refresh().catch(error => {
-  message.textContent = "সমস্যা: " + error.message;
-});
+startApp();
