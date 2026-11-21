@@ -19,16 +19,37 @@
     <input id="email" type="email" placeholder="আপনার Gmail">
     <input id="password" type="password" placeholder="আপনার পাসওয়ার্ড">
     <button id="loginBtn">লগইন করুন</button>
+    <button id="resetBtn">পাসওয়ার্ড ভুলে গেছেন?</button>
     <p id="message"></p>
+  </section>
+
+  <section id="recoveryBox" class="card" hidden>
+    <h2>নতুন পাসওয়ার্ড</h2>
+    <input id="newPassword" type="password" placeholder="নতুন পাসওয়ার্ড">
+    <button id="updatePasswordBtn">পাসওয়ার্ড পরিবর্তন</button>
   </section>
 
   <section id="vaultBox" class="card" hidden>
     <h2>আমার ব্যক্তিগত তথ্য</h2>
+
+    <input id="search" placeholder="তথ্য খুঁজুন...">
+
     <input id="title" placeholder="তথ্যের শিরোনাম">
     <textarea id="content" placeholder="আপনার তথ্য লিখুন"></textarea>
+
     <button id="saveBtn">সংরক্ষণ করুন</button>
-    <button id="logoutBtn">লগআউট</button>
+    <button id="cancelEditBtn" hidden>সম্পাদনা বাতিল</button>
+
     <div id="entries"></div>
+
+    <hr>
+
+    <h3>অ্যাকাউন্ট নিরাপত্তা</h3>
+    <input id="changePassword" type="password" placeholder="নতুন পাসওয়ার্ড">
+    <button id="changePasswordBtn">পাসওয়ার্ড পরিবর্তন</button>
+
+    <button id="backupBtn">ব্যাকআপ ডাউনলোড</button>
+    <button id="logoutBtn">লগআউট</button>
   </section>
 </main>
 
@@ -36,5 +57,5 @@
 <script src="config.js"></script>
 <script src="app.js"></script>
 </body>
-  </html>
+      </html>
   
