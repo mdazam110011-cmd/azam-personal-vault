@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AZAM — Personal Vault</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="container">
+  <header>
+    <h1>AZAM</h1>
+    <p>PERSONAL VAULT</p>
+  </header>
+
+  <section id="loginBox" class="card">
+    <h2>আমার ব্যক্তিগত ভল্ট</h2>
+    <input id="email" type="email" placeholder="আপনার Gmail">
+    <input id="password" type="password" placeholder="আপনার পাসওয়ার্ড">
+    <button id="loginBtn">লগইন করুন</button>
+    <p id="message"></p>
+  </section>
+
+  <section id="vaultBox" class="card" hidden>
+    <h2>আমার ব্যক্তিগত তথ্য</h2>
+    <input id="title" placeholder="তথ্যের শিরোনাম">
+    <textarea id="content" placeholder="আপনার তথ্য লিখুন"></textarea>
+    <button id="saveBtn">সংরক্ষণ করুন</button>
+    <button id="logoutBtn">লগআউট</button>
+    <div id="entries"></div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+  </html>
+  
