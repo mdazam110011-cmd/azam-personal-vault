@@ -1,16 +1,16 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap');
 
 :root {
-  --bg: #080d18;
-  --panel: #111c2e;
-  --panel-light: #17263c;
-  --gold: #e7c878;
-  --gold-light: #ffe6a1;
-  --text: #f5f5f7;
-  --muted: #9eacc1;
-  --border: rgba(231,200,120,.2);
-  --danger: #e66c78;
+  --bg: #080d1b;
+  --panel: #111a2e;
+  --panel2: #17233b;
+  --gold: #e6bd69;
+  --gold-light: #f8dfa0;
+  --text: #f5f3ed;
+  --muted: #a7b0c2;
+  --border: rgba(230,189,105,.22);
+  --danger: #ff7777;
 }
 
 * {
@@ -24,62 +24,49 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
-  padding: 24px 14px;
-  color: var(--text);
+  padding: 25px 15px;
   font-family: 'Hind Siliguri', sans-serif;
+  color: var(--text);
   background:
-    radial-gradient(ellipse at 50% -15%, #273b58 0%, transparent 55%),
-    linear-gradient(145deg, #080d18, #101b2d 60%, #080d18);
+    radial-gradient(ellipse at top, #1b2a48 0%, transparent 55%),
+    linear-gradient(145deg, #080d1b, #101a30 55%, #080d1b);
 }
 
-.container {
-  width: 100%;
-  max-width: 760px;
-  margin: 0 auto;
+h1, h2, h3 {
+  font-family: 'Outfit', 'Hind Siliguri', sans-serif;
+  color: var(--gold-light);
+  letter-spacing: .3px;
 }
 
-header {
+h1 {
   text-align: center;
-  padding: 28px 12px 32px;
-}
-
-header h1 {
-  margin: 0;
-  font-family: 'Outfit', sans-serif;
-  font-size: clamp(46px, 10vw, 68px);
-  font-weight: 800;
-  letter-spacing: 10px;
-  color: var(--gold);
-  text-shadow: 0 0 35px #e7c87835;
-}
-
-header p {
-  margin: 5px 0 0;
-  color: var(--muted);
-  font-family: 'Outfit', sans-serif;
-  letter-spacing: 5px;
-  font-size: 12px;
-}
-
-.card {
-  padding: clamp(20px, 5vw, 32px);
-  margin: 18px 0;
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  background: linear-gradient(145deg, #17253aee, #0e192aee);
-  box-shadow: 0 18px 55px #0006;
-  backdrop-filter: blur(12px);
+  font-size: 34px;
+  margin: 15px 0 8px;
 }
 
 h2 {
-  margin: 0 0 22px;
-  color: var(--gold);
-  font-size: 25px;
-  font-weight: 700;
+  font-size: 23px;
 }
 
-h3 {
-  color: var(--gold-light);
+p {
+  color: var(--muted);
+}
+
+#loginBox,
+#vaultBox,
+#recoveryBox {
+  width: 100%;
+  max-width: 520px;
+  margin: 35px auto;
+  padding: 28px;
+  background: linear-gradient(145deg, rgba(23,35,59,.97), rgba(13,21,38,.98));
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.4);
+}
+
+#vaultBox {
+  max-width: 850px;
 }
 
 input,
@@ -87,187 +74,144 @@ textarea,
 select {
   display: block;
   width: 100%;
-  margin: 13px 0;
+  margin: 12px 0;
   padding: 15px 16px;
-  border: 1px solid #344760;
+  color: var(--text);
+  background: #0b1427;
+  border: 1px solid rgba(230,189,105,.25);
   border-radius: 13px;
   outline: none;
-  background: #091322;
-  color: var(--text);
   font-family: 'Hind Siliguri', sans-serif;
   font-size: 16px;
-  transition: border .2s, box-shadow .2s;
-}
-
-input::placeholder,
-textarea::placeholder {
-  color: #7f90a8;
+  transition: .25s ease;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
   border-color: var(--gold);
-  box-shadow: 0 0 0 3px #e7c87820;
+  box-shadow: 0 0 0 3px rgba(230,189,105,.12);
 }
 
-select {
-  cursor: pointer;
+input::placeholder,
+textarea::placeholder {
+  color: #77849b;
 }
 
 textarea {
-  min-height: 145px;
+  min-height: 140px;
   resize: vertical;
-  line-height: 1.7;
+}
+
+select option {
+  background: #111a2e;
+  color: white;
 }
 
 button {
-  display: inline-block;
-  min-height: 46px;
-  margin: 6px 5px 6px 0;
-  padding: 11px 21px;
+  padding: 12px 21px;
+  margin: 6px 4px 6px 0;
   border: 1px solid transparent;
   border-radius: 12px;
-  background: linear-gradient(135deg, #f5d990, #c99e48);
-  color: #151c29;
+  background: linear-gradient(135deg, #f4d58c, #c99a43);
+  color: #172033;
   font-family: 'Hind Siliguri', sans-serif;
   font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-  transition: transform .2s, box-shadow .2s, opacity .2s;
+  transition: .25s ease;
 }
 
 button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 7px 20px #e7c87830;
+  box-shadow: 0 8px 22px rgba(230,189,105,.2);
 }
 
 button:active {
-  transform: scale(.98);
+  transform: scale(.97);
 }
 
-button:disabled {
-  opacity: .5;
-  cursor: not-allowed;
-  transform: none;
-}
-
-#loginBtn,
-#saveBtn {
-  width: 100%;
-}
-
-#resetBtn {
-  width: 100%;
+#cancelEditBtn,
+#logoutBtn {
+  color: var(--gold-light);
   background: transparent;
-  color: var(--gold);
   border-color: var(--border);
 }
 
-#cancelEditBtn {
-  background: #34445d;
-  color: white;
-}
-
 #logoutBtn {
-  background: #34445d;
-  color: white;
-}
-
-#changePasswordBtn {
-  width: 100%;
-}
-
-#backupBtn {
-  background: #1c785f;
-  color: white;
+  border-color: rgba(255,119,119,.4);
+  color: var(--danger);
 }
 
 #entries {
   margin-top: 25px;
 }
 
-.entry {
-  margin: 15px 0;
+#entries > div {
+  margin: 14px 0;
   padding: 20px;
+  background: linear-gradient(145deg, #192741, #111b30);
   border: 1px solid var(--border);
   border-radius: 17px;
-  background: linear-gradient(145deg, #17263a, #0b1626);
   overflow-wrap: anywhere;
-  box-shadow: 0 8px 22px #0003;
 }
 
-.entry h3 {
-  margin: 0 0 8px;
+#entries h3 {
+  margin-top: 0;
   font-size: 21px;
 }
 
-.entry p {
-  color: #d5dce7;
+#entries p {
   line-height: 1.8;
   white-space: pre-wrap;
-}
-
-.entry button {
-  margin-top: 8px;
-}
-
-.entry button:last-child {
-  background: #522b37;
-  color: #ffdce0;
 }
 
 #message,
 #passwordMessage {
   color: var(--gold-light);
-  font-size: 15px;
-  overflow-wrap: anywhere;
+  font-weight: 600;
+  text-align: center;
 }
 
-hr {
-  margin: 28px 0;
-  border: 0;
+#search {
+  margin: 22px 0;
+}
+
+#backupBtn {
+  background: #1c745f;
+  color: white;
+}
+
+#changePassword {
+  margin-top: 25px;
+  padding-top: 20px;
   border-top: 1px solid var(--border);
 }
 
-[hidden] {
-  display: none !important;
+hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 25px 0;
 }
 
-::selection {
-  background: var(--gold);
-  color: #101827;
-}
-
-@media (max-width: 520px) {
+@media (max-width: 600px) {
   body {
     padding: 12px 10px;
   }
 
-  header {
-    padding: 22px 8px 25px;
+  #loginBox,
+  #vaultBox,
+  #recoveryBox {
+    margin: 15px auto;
+    padding: 19px;
+    border-radius: 19px;
   }
 
-  header h1 {
-    font-size: 43px;
-    letter-spacing: 7px;
-  }
-
-  .card {
-    padding: 19px 15px;
-    border-radius: 18px;
-  }
-
-  h2 {
-    font-size: 22px;
+  h1 {
+    font-size: 28px;
   }
 
   button {
-    width: 100%;
-    margin: 6px 0;
-  }
-
-  .entry {
-    padding: 16px;
+    font-size: 15px;
   }
 }
