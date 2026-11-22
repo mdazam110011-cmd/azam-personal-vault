@@ -36,6 +36,28 @@ function showVault(session) {
   $("vaultBox").hidden = !session;
 }
 
+function updateDashboard() {
+  const counts = {
+    total: allEntries.length,
+    personal: 0,
+    work: 0,
+    important: 0
+  };
+
+  allEntries.forEach(item => {
+    const category = item.category || "সাধারণ";
+
+    if (category === "ব্যক্তিগত") counts.personal++;
+    if (category === "কাজ") counts.work++;
+    if (category === "গুরুত্বপূর্ণ") counts.important++;
+  });
+
+  if ($("totalCount")) $("totalCount").textContent = counts.total;
+  if ($("personalCount")) $("personalCount").textContent = counts.personal;
+  if ($("workCount")) $("workCount").textContent = counts.work;
+  if ($("importantCount")) $("importantCount").textContent = counts.important;
+}
+
 function resetIdleTimer() {
   clearTimeout(idleTimer);
 
@@ -47,6 +69,7 @@ function resetIdleTimer() {
     if (data.session) {
       await client.auth.signOut();
       allEntries = [];
+      updateDashboard();
       showVault(null);
       msg("নিরাপত্তার জন্য আপনাকে স্বয়ংক্রিয়ভাবে লগআউট করা হয়েছে।");
     }
@@ -65,10 +88,7 @@ function stopSecurity() {
 ["click", "keydown", "touchstart", "scroll", "pointerdown"].forEach(event => {
   window.addEventListener(event, () => {
     const vault = $("vaultBox");
-
-    if (vault && !vault.hidden) {
-      resetIdleTimer();
-    }
+    if (vault && !vault.hidden) resetIdleTimer();
   }, { passive: true });
 });
 
@@ -87,6 +107,7 @@ async function loadEntries() {
   }
 
   allEntries = data || [];
+  updateDashboard();
   renderEntries();
 }
 
@@ -101,11 +122,9 @@ function renderEntries() {
     const content = (item.content || "").toLowerCase();
     const category = (item.category || "সাধারণ").toLowerCase();
 
-    return (
-      title.includes(query) ||
+    return title.includes(query) ||
       content.includes(query) ||
-      category.includes(query)
-    );
+      category.includes(query);
   });
 
   if (!filtered.length) {
@@ -182,7 +201,6 @@ function cancelEdit() {
   $("cancelEditBtn").hidden = true;
 }
 
-// তথ্য সংরক্ষণ ও সম্পাদনা
 async function saveEntry() {
   const title = $("title").value.trim();
   const content = $("content").value.trim();
@@ -242,7 +260,6 @@ $("saveBtn").addEventListener("click", saveEntry);
 $("cancelEditBtn").addEventListener("click", cancelEdit);
 $("search").addEventListener("input", renderEntries);
 
-// লগইন
 $("loginBtn").addEventListener("click", async () => {
   msg("লগইন হচ্ছে...");
 
@@ -260,7 +277,6 @@ $("loginBtn").addEventListener("click", async () => {
   }
 });
 
-// লগআউট
 $("logoutBtn").addEventListener("click", async () => {
   const { error } = await client.auth.signOut();
 
@@ -269,13 +285,13 @@ $("logoutBtn").addEventListener("click", async () => {
   } else {
     stopSecurity();
     allEntries = [];
+    updateDashboard();
     cancelEdit();
     showVault(null);
     msg("সফলভাবে লগআউট হয়েছে।");
   }
 });
 
-// পাসওয়ার্ড পরিবর্তন
 $("changePasswordBtn").addEventListener("click", async () => {
   const password = $("changePassword").value;
 
@@ -303,7 +319,6 @@ $("changePasswordBtn").addEventListener("click", async () => {
   }
 });
 
-// পাসওয়ার্ড রিসেট ইমেইল
 $("resetBtn").addEventListener("click", async () => {
   const email = $("email").value.trim();
 
@@ -322,7 +337,6 @@ $("resetBtn").addEventListener("click", async () => {
   );
 });
 
-// রিসেট লিংক থেকে নতুন পাসওয়ার্ড
 $("updatePasswordBtn").addEventListener("click", async () => {
   const password = $("newPassword").value;
 
@@ -345,7 +359,6 @@ $("updatePasswordBtn").addEventListener("click", async () => {
   }
 });
 
-// JSON ব্যাকআপ ডাউনলোড
 $("backupBtn").addEventListener("click", () => {
   if (!allEntries.length) {
     msg("ব্যাকআপ করার মতো কোনো তথ্য নেই।");
@@ -373,11 +386,9 @@ $("backupBtn").addEventListener("click", () => {
   link.remove();
 
   setTimeout(() => URL.revokeObjectURL(url), 3000);
-
   msg("ব্যাকআপ ডাউনলোড শুরু হয়েছে।");
 });
 
-// লগইন অবস্থা পরীক্ষা
 async function refresh() {
   const { data, error } = await client.auth.getSession();
 
@@ -394,10 +405,10 @@ async function refresh() {
   } else {
     stopSecurity();
     allEntries = [];
+    updateDashboard();
   }
 }
 
-// Auth পরিবর্তন পর্যবেক্ষণ
 client.auth.onAuthStateChange((event, session) => {
   if (event === "PASSWORD_RECOVERY") {
     isRecoveringPassword = true;
@@ -412,6 +423,7 @@ client.auth.onAuthStateChange((event, session) => {
   if (event === "SIGNED_OUT") {
     stopSecurity();
     allEntries = [];
+    updateDashboard();
     showVault(null);
     return;
   }
