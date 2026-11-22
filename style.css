@@ -215,3 +215,52 @@ hr {
     font-size: 15px;
   }
 }
+
+#dashboard {
+  margin: 20px 0 30px;
+  padding: 20px;
+  background: linear-gradient(145deg, #172743, #101a2e);
+  border: 1px solid rgba(230,189,105,.3);
+  border-radius: 20px;
+}
+
+#dashboard h2 {
+  margin-top: 0;
+  color: #f8dfa0;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.dashboard-card {
+  padding: 18px 10px;
+  text-align: center;
+  background: linear-gradient(145deg, #223553, #111d32);
+  border: 1px solid rgba(230,189,105,.25);
+  border-radius: 16px;
+}
+
+.dashboard-card span {
+  font-size: 27px;
+}
+
+.dashboard-card h3 {
+  margin: 8px 0;
+  font-size: 30px;
+  color: #f4d58c;
+}
+
+.dashboard-card p {
+  margin: 0;
+  color: #c4cbd8;
+}
+
+@media (min-width: 650px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
