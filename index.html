@@ -2,98 +2,196 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AZAM — Personal Vault</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d1b">
+  <title>AZAM — Personal Vault</title>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 <main class="container">
+
   <header>
     <h1>AZAM</h1>
     <p>PERSONAL VAULT</p>
   </header>
 
+  <!-- LOGIN -->
   <section id="loginBox" class="card">
     <h2>আমার ব্যক্তিগত ভল্ট</h2>
+
     <input id="email" type="email" placeholder="আপনার Gmail">
     <input id="password" type="password" placeholder="আপনার পাসওয়ার্ড">
+
     <button id="loginBtn">লগইন করুন</button>
     <button id="resetBtn">পাসওয়ার্ড ভুলে গেছেন?</button>
+
     <p id="message"></p>
   </section>
 
+  <!-- PASSWORD RECOVERY -->
   <section id="recoveryBox" class="card" hidden>
     <h2>নতুন পাসওয়ার্ড</h2>
-    <input id="newPassword" type="password" placeholder="নতুন পাসওয়ার্ড">
-    <button id="updatePasswordBtn">পাসওয়ার্ড পরিবর্তন</button>
+
+    <input id="newPassword" type="password"
+      placeholder="নতুন পাসওয়ার্ড">
+
+    <button id="updatePasswordBtn">
+      পাসওয়ার্ড পরিবর্তন
+    </button>
   </section>
 
+  <!-- MAIN VAULT -->
   <section id="vaultBox" class="card" hidden>
+
     <h2>আমার ব্যক্তিগত তথ্য</h2>
 
+    <!-- DASHBOARD -->
+    <div id="dashboard">
 
-<div id="dashboard">
-  <h2>✨ AZAM Dashboard</h2>
-  <p>আপনার তথ্যের সারসংক্ষেপ</p>
+      <h2>✨ AZAM Dashboard</h2>
+      <p>আপনার তথ্যের সারসংক্ষেপ</p>
 
-  <div class="dashboard-grid">
-    <div class="dashboard-card">
-      <span>📁</span>
-      <h3 id="totalCount">0</h3>
-      <p>মোট তথ্য</p>
+      <div class="dashboard-grid">
+
+        <div class="dashboard-card">
+          <span>📁</span>
+          <h3 id="totalCount">0</h3>
+          <p>মোট তথ্য</p>
+        </div>
+
+        <div class="dashboard-card">
+          <span>👤</span>
+          <h3 id="personalCount">0</h3>
+          <p>ব্যক্তিগত</p>
+        </div>
+
+        <div class="dashboard-card">
+          <span>💼</span>
+          <h3 id="workCount">0</h3>
+          <p>কাজ</p>
+        </div>
+
+        <div class="dashboard-card">
+          <span>⭐</span>
+          <h3 id="importantCount">0</h3>
+          <p>গুরুত্বপূর্ণ</p>
+        </div>
+
+      </div>
     </div>
 
-    <div class="dashboard-card">
-      <span>👤</span>
-      <h3 id="personalCount">0</h3>
-      <p>ব্যক্তিগত</p>
+    <!-- SEARCH -->
+    <h3>🔍 তথ্য খুঁজুন</h3>
+
+    <div class="search-area">
+
+      <input
+        id="search"
+        type="search"
+        placeholder="শিরোনাম, তথ্য বা ক্যাটাগরি খুঁজুন..."
+      >
+
+      <button type="button" id="clearSearch">
+        ✖ মুছুন
+      </button>
+
     </div>
 
-    <div class="dashboard-card">
-      <span>💼</span>
-      <h3 id="workCount">0</h3>
-      <p>কাজ</p>
+    <!-- FILTER -->
+    <h3>ক্যাটাগরি ফিল্টার</h3>
+
+    <div class="filter-area">
+
+      <select id="categoryFilter">
+        <option value="সব ক্যাটাগরি">সব ক্যাটাগরি</option>
+        <option value="সাধারণ">সাধারণ</option>
+        <option value="ব্যক্তিগত">ব্যক্তিগত</option>
+        <option value="কাজ">কাজ</option>
+        <option value="গুরুত্বপূর্ণ">গুরুত্বপূর্ণ</option>
+        <option value="অন্যান্য">অন্যান্য</option>
+      </select>
+
+      <button type="button" id="importantOnly">
+        ⭐ গুরুত্বপূর্ণ তথ্য
+      </button>
+
     </div>
-
-    <div class="dashboard-card">
-      <span>⭐</span>
-      <h3 id="importantCount">0</h3>
-      <p>গুরুত্বপূর্ণ</p>
-    </div>
-  </div>
-</div>
-
-    <input id="search" placeholder="তথ্য খুঁজুন..."><select id="category">
-  <option value="সাধারণ">সাধারণ</option>
-  <option value="ব্যক্তিগত">ব্যক্তিগত</option>
-  <option value="কাজ">কাজ</option>
-  <option value="গুরুত্বপূর্ণ">গুরুত্বপূর্ণ</option>
-  <option value="অন্যান্য">অন্যান্য</option>
-</select>
-
-    <input id="title" placeholder="তথ্যের শিরোনাম">
-    <textarea id="content" placeholder="আপনার তথ্য লিখুন"></textarea>
-
-    <button id="saveBtn">সংরক্ষণ করুন</button>
-    <button id="cancelEditBtn" hidden>সম্পাদনা বাতিল</button>
-
-    <div id="entries"></div>
 
     <hr>
 
-    <h3>অ্যাকাউন্ট নিরাপত্তা</h3>
-    <input id="changePassword" type="password" placeholder="নতুন পাসওয়ার্ড">
-    <button id="changePasswordBtn">পাসওয়ার্ড পরিবর্তন</button>
-<p id="passwordMessage"></p>
-    <button id="backupBtn">ব্যাকআপ ডাউনলোড</button>
-    <button id="logoutBtn">লগআউট</button>
+    <!-- ADD INFORMATION -->
+    <h3>➕ নতুন তথ্য সংরক্ষণ</h3>
+
+    <label for="category">তথ্যের ক্যাটাগরি</label>
+
+    <select id="category">
+      <option value="সাধারণ">সাধারণ</option>
+      <option value="ব্যক্তিগত">ব্যক্তিগত</option>
+      <option value="কাজ">কাজ</option>
+      <option value="গুরুত্বপূর্ণ">গুরুত্বপূর্ণ</option>
+      <option value="অন্যান্য">অন্যান্য</option>
+    </select>
+
+    <input
+      id="title"
+      type="text"
+      placeholder="তথ্যের শিরোনাম"
+    >
+
+    <textarea
+      id="content"
+      placeholder="আপনার তথ্য লিখুন"
+    ></textarea>
+
+    <button id="saveBtn">সংরক্ষণ করুন</button>
+
+    <button id="cancelEditBtn" hidden>
+      সম্পাদনা বাতিল
+    </button>
+
+    <!-- SAVED ENTRIES -->
+    <hr>
+
+    <h3>📂 সংরক্ষিত তথ্য</h3>
+
+    <div id="entries"></div>
+
+    <!-- ACCOUNT SECURITY -->
+    <hr>
+
+    <h3>🔐 অ্যাকাউন্ট নিরাপত্তা</h3>
+
+    <input
+      id="changePassword"
+      type="password"
+      placeholder="নতুন পাসওয়ার্ড"
+    >
+
+    <button id="changePasswordBtn">
+      পাসওয়ার্ড পরিবর্তন
+    </button>
+
+    <p id="passwordMessage"></p>
+
+    <hr>
+
+    <button id="backupBtn">
+      📥 ব্যাকআপ ডাউনলোড
+    </button>
+
+    <button id="logoutBtn">
+      লগআউট
+    </button>
+
   </section>
+
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <script src="app.js"></script>
+
 </body>
-      </html>
-  
+</html>
