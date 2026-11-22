@@ -19,6 +19,7 @@ let editingId = null;
 let allEntries = [];
 let idleTimer = null;
 let isRecoveringPassword = false;
+let importantOnly = false;
 
 const IDLE_LIMIT = 15 * 60 * 1000;
 
@@ -60,7 +61,6 @@ function updateDashboard() {
 
 function resetIdleTimer() {
   clearTimeout(idleTimer);
-
   if (isRecoveringPassword) return;
 
   idleTimer = setTimeout(async () => {
@@ -71,7 +71,7 @@ function resetIdleTimer() {
       allEntries = [];
       updateDashboard();
       showVault(null);
-      msg("নিরাপত্তার জন্য আপনাকে স্বয়ংক্রিয়ভাবে লগআউট করা হয়েছে।");
+      msg("নিরাপত্তার জন্য স্বয়ংক্রিয়ভাবে লগআউট করা হয়েছে।");
     }
   }, IDLE_LIMIT);
 }
@@ -114,6 +114,7 @@ async function loadEntries() {
 function renderEntries() {
   const box = $("entries");
   const query = $("search").value.trim().toLowerCase();
+  const selectedCategory = $("categoryFilter").value;
 
   box.innerHTML = "";
 
@@ -122,13 +123,23 @@ function renderEntries() {
     const content = (item.content || "").toLowerCase();
     const category = (item.category || "সাধারণ").toLowerCase();
 
-    return title.includes(query) ||
+    const matchesSearch =
+      title.includes(query) ||
       content.includes(query) ||
       category.includes(query);
+
+    const matchesCategory =
+      selectedCategory === "সব ক্যাটাগরি" ||
+      (item.category || "সাধারণ") === selectedCategory;
+
+    const matchesImportant =
+      !importantOnly || item.category === "গুরুত্বপূর্ণ";
+
+    return matchesSearch && matchesCategory && matchesImportant;
   });
 
   if (!filtered.length) {
-    box.textContent = "কোনো তথ্য পাওয়া যায়নি।";
+    box.textContent = "এই অনুসন্ধানে কোনো তথ্য পাওয়া যায়নি।";
     return;
   }
 
@@ -137,9 +148,11 @@ function renderEntries() {
     article.className = "entry";
 
     const heading = document.createElement("h3");
-    heading.textContent = item.title;
+    heading.textContent =
+      (item.category === "গুরুত্বপূর্ণ" ? "⭐ " : "") + item.title;
 
     const category = document.createElement("p");
+    category.className = "entry-category";
     category.textContent = "ক্যাটাগরি: " + (item.category || "সাধারণ");
 
     const content = document.createElement("p");
@@ -147,11 +160,10 @@ function renderEntries() {
 
     const edit = document.createElement("button");
     edit.type = "button";
-    edit.textContent = "সম্পাদনা";
+    edit.textContent = "✏️ সম্পাদনা";
 
     edit.addEventListener("click", () => {
       editingId = item.id;
-
       $("title").value = item.title;
       $("content").value = item.content;
       $("category").value = item.category || "সাধারণ";
@@ -161,13 +173,12 @@ function renderEntries() {
 
       window.scrollTo({ top: 0, behavior: "smooth" });
       $("title").focus();
-
       msg("তথ্য পরিবর্তন করে সংরক্ষণ করুন।");
     });
 
     const del = document.createElement("button");
     del.type = "button";
-    del.textContent = "মুছে ফেলুন";
+    del.textContent = "🗑️ মুছে ফেলুন";
 
     del.addEventListener("click", async () => {
       if (!confirm("এই তথ্যটি স্থায়ীভাবে মুছে ফেলতে চান?")) return;
@@ -192,11 +203,9 @@ function renderEntries() {
 
 function cancelEdit() {
   editingId = null;
-
   $("title").value = "";
   $("content").value = "";
   $("category").value = "সাধারণ";
-
   $("saveBtn").textContent = "সংরক্ষণ করুন";
   $("cancelEditBtn").hidden = true;
 }
@@ -259,6 +268,23 @@ async function saveEntry() {
 $("saveBtn").addEventListener("click", saveEntry);
 $("cancelEditBtn").addEventListener("click", cancelEdit);
 $("search").addEventListener("input", renderEntries);
+$("categoryFilter").addEventListener("change", renderEntries);
+
+$("clearSearch").addEventListener("click", () => {
+  $("search").value = "";
+  renderEntries();
+});
+
+$("importantOnly").addEventListener("click", () => {
+  importantOnly = !importantOnly;
+
+  $("importantOnly").textContent = importantOnly
+    ? "⭐ সব তথ্য দেখুন"
+    : "⭐ গুরুত্বপূর্ণ তথ্য";
+
+  $("importantOnly").classList.toggle("active", importantOnly);
+  renderEntries();
+});
 
 $("loginBtn").addEventListener("click", async () => {
   msg("লগইন হচ্ছে...");
@@ -300,12 +326,10 @@ $("changePasswordBtn").addEventListener("click", async () => {
     return;
   }
 
-  msg("পাসওয়ার্ড পরিবর্তন হচ্ছে...");
-
   const { data, error: sessionError } = await client.auth.getSession();
 
   if (sessionError || !data.session) {
-    msg("লগইন সেশন পাওয়া যায়নি। আবার লগইন করুন।");
+    msg("আবার লগইন করুন।");
     return;
   }
 
@@ -353,7 +377,6 @@ $("updatePasswordBtn").addEventListener("click", async () => {
     $("newPassword").value = "";
     $("recoveryBox").hidden = true;
     isRecoveringPassword = false;
-
     msg("নতুন পাসওয়ার্ড সফলভাবে সেট হয়েছে!");
     await refresh();
   }
@@ -413,7 +436,6 @@ client.auth.onAuthStateChange((event, session) => {
   if (event === "PASSWORD_RECOVERY") {
     isRecoveringPassword = true;
     stopSecurity();
-
     $("loginBox").hidden = true;
     $("vaultBox").hidden = true;
     $("recoveryBox").hidden = false;
@@ -432,7 +454,6 @@ client.auth.onAuthStateChange((event, session) => {
 
   if (session && !isRecoveringPassword) {
     startSecurity();
-
     setTimeout(() => {
       loadEntries().catch(error => msg(error.message));
     }, 0);
